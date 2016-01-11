@@ -23,6 +23,8 @@ public class RelateSlider implements SwipeListener {
 
     @Override
     public void onScroll(float percent, int px) {
+        // 获取前一页的page
+        // todo import getPrePage
         SwipeBackPage page = SwipeBackHelper.getPrePage(curPage);
         if (page!=null){
             page.getSwipeBackLayout().setX(-offset * Math.max(1 - percent,0));

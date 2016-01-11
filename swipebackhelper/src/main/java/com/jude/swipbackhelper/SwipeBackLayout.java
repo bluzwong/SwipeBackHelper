@@ -97,10 +97,13 @@ public class SwipeBackLayout extends FrameLayout {
 
     public SwipeBackLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
+        // 滑动控制
         mDragHelper = ViewDragHelper.create(this, new ViewDragCallback());
 
+        // 设置阴影
         setShadow(R.drawable.shadow_left);
 
+        // 设置一些滑动的控制参数
         final float density = getResources().getDisplayMetrics().density;
         final float minVel = MIN_FLING_VELOCITY * density;
         setEdgeSize(getResources().getDisplayMetrics().widthPixels);
@@ -118,6 +121,7 @@ public class SwipeBackLayout extends FrameLayout {
      *                    ViewConfiguration.getScaledTouchSlop * (1 / s);
      */
     public void setSensitivity(Context context, float sensitivity) {
+        // 设置滑动的灵敏度
         mDragHelper.setSensitivity(context, sensitivity);
     }
 
@@ -141,6 +145,7 @@ public class SwipeBackLayout extends FrameLayout {
      * @param color Color to use in 0xAARRGGBB format.
      */
     public void setScrimColor(int color) {
+        // 设置遮罩层阴影
         mScrimColor = color;
         invalidate();
     }
@@ -153,12 +158,14 @@ public class SwipeBackLayout extends FrameLayout {
      * @param size The size of an edge in pixels
      */
     public void setEdgeSize(int size) {
+        // 设置边界宽度
         mTrackingEdge = size;
         mDragHelper.setEdgeSize(mTrackingEdge);
     }
 
 
     public void setEdgeSizePercent(float size) {
+        // 设置边界宽度百分比
         mTrackingEdge = (int) (getResources().getDisplayMetrics().widthPixels * size);
         mDragHelper.setEdgeSize(mTrackingEdge);
     }
@@ -181,6 +188,7 @@ public class SwipeBackLayout extends FrameLayout {
      * @param listener the swipe listener to attach to this view
      */
     public void addSwipeListener(SwipeListener listener) {
+        // 添加滑动监听器
         if (mListeners == null) {
             mListeners = new ArrayList<SwipeListener>();
         }
@@ -193,6 +201,7 @@ public class SwipeBackLayout extends FrameLayout {
      * @param listener
      */
     public void removeSwipeListener(SwipeListener listener) {
+        // 移除滑动监听器
         if (mListeners == null) {
             return;
         }
@@ -208,6 +217,7 @@ public class SwipeBackLayout extends FrameLayout {
      * @param threshold
      */
     public void setScrollThreshold(float threshold) {
+        // 关闭的百分比
         if (threshold >= 1.0f || threshold <= 0) {
             throw new IllegalArgumentException("Threshold value should be between 0 and 1.0");
         }
@@ -215,7 +225,12 @@ public class SwipeBackLayout extends FrameLayout {
     }
 
 
+    /**
+     * 设置阴影
+     * @param shadow
+     */
     public void setShadow(Drawable shadow) {
+        // 设置drawable 然后重绘
         mShadowLeft = shadow;
         invalidate();
     }
@@ -229,6 +244,7 @@ public class SwipeBackLayout extends FrameLayout {
      * Scroll out contentView and finish the activity
      */
     public void scrollToFinishActivity() {
+        // 滑动结束activity
         final int childWidth = mContentView.getWidth();
         int left = 0, top = 0;
         left = childWidth + mShadowLeft.getIntrinsicWidth() + OVERSCROLL_DISTANCE;
@@ -238,6 +254,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
+        // 处理滑动
         if (!mEnable) {
             return false;
         }
@@ -252,6 +269,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // 处理滑动
         if (!mEnable) {
             return false;
         }
@@ -267,6 +285,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        // 布局子布局
         mInLayout = true;
         if (mContentView != null)
             mContentView.layout(mContentLeft, 0,
@@ -295,6 +314,7 @@ public class SwipeBackLayout extends FrameLayout {
         return ret;
     }
 
+    // 绘制遮罩层
     private void drawScrim(Canvas canvas, View child) {
         final int baseAlpha = (mScrimColor & 0xff000000) >>> 24;
         final int alpha = (int) (baseAlpha * mScrimOpacity);
@@ -303,6 +323,7 @@ public class SwipeBackLayout extends FrameLayout {
         canvas.drawColor(color);
     }
 
+    // 绘制边界阴影
     private void drawShadow(Canvas canvas, View child) {
         final Rect childRect = mTmpRect;
         child.getHitRect(childRect);
@@ -313,6 +334,7 @@ public class SwipeBackLayout extends FrameLayout {
         mShadowLeft.draw(canvas);
     }
 
+    // 附加到activity
     public void attachToActivity(Activity activity) {
         mActivity = activity;
         TypedArray a = activity.getTheme().obtainStyledAttributes(new int[]{
